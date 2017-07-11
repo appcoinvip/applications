@@ -119,7 +119,7 @@ OBJS= \
     obj/extkey.o \
     obj/db.o \
     obj/init.o \
-    obj/infocoind.o \
+    obj/shadowcoind.o \
     obj/keystore.o \
     obj/miner.o \
     obj/main.o \
@@ -160,7 +160,7 @@ OBJS= \
     obj/bloom.o 
 
 
-all: infocoind
+all: appcoind
 
 test check: test_shadow FORCE
 	./test_shadow
@@ -198,7 +198,7 @@ obj/%.o: %.cpp
 		-e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	rm -f $(@:%.o=%.d)
 
-infocoind: $(OBJS:obj/%=obj/%)
+appcoind: $(OBJS:obj/%=obj/%)
 	$(LINK) $(xCXXFLAGS) -o $@ $^ $(xLDFLAGS) $(LIBS)
 
 
@@ -213,11 +213,11 @@ obj-test/%.o: test/%.cpp
 		-e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	rm -f $(@:%.o=%.d)
 
-test_shadow: $(TESTOBJS) $(filter-out obj/init.o obj/infocoind.o,$(OBJS:obj/%=obj/%))
+test_shadow: $(TESTOBJS) $(filter-out obj/init.o obj/appcoind.o,$(OBJS:obj/%=obj/%))
 	$(LINK) $(xCXXFLAGS) -o $@ $(LIBPATHS) $^ $(TESTLIBS) $(xLDFLAGS) $(LIBS)
 
 clean:
-	-rm -f infocoind
+	-rm -f appcoind
 	-rm -f obj/*.o
 	-rm -f obj/*.P
 	-rm -f obj/build.h

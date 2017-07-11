@@ -88,7 +88,7 @@ OBJS= \
     obj/extkey.o \
     obj/db.o \
     obj/init.o \
-    obj/infocoind.o \
+    obj/shadowcoind.o \
     obj/keystore.o \
     obj/miner.o \
     obj/main.o \
@@ -128,7 +128,7 @@ OBJS= \
     obj/state.o \
     obj/bloom.o 
 
-all: infocoind.exe
+all: appcoind.exe
 
 test check: test_shadow FORCE
 	./test_shadow
@@ -150,9 +150,9 @@ DEFS += -DHAVE_BUILD_INFO
 obj/%.o: %.cpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) -o $@ $<
 
-infocoind.exe: $(OBJS:obj/%=obj/%)
+appcoind.exe: $(OBJS:obj/%=obj/%)
 	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS) -lshlwapi
-	strip infocoind.exe
+	strip appcoind.exe
 
 obj/scrypt-x86.o: scrypt-x86.S
 	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
@@ -174,12 +174,12 @@ obj-test/%.o: test/%.cpp
 		-e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
 	rm -f $(@:%.o=%.d)
 
-test_shadow.exe: $(TESTOBJS) $(filter-out obj/init.o obj/infocoind.o,$(OBJS:obj/%=obj/%))
+test_shadow.exe: $(TESTOBJS) $(filter-out obj/init.o obj/appcoind.o,$(OBJS:obj/%=obj/%))
 	$(LINK) $(xCXXFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(TESTLIBS) $(xLDFLAGS) $(LIBS)
 
 clean:
 	-rm -f obj/*.o
-	-rm -f infocoind.exe
+	-rm -f appcoind.exe
 	-rm -f obj/build.h
 	cd leveldb && TARGET_OS=NATIVE_WINDOWS $(MAKE) clean && cd ..
 	-rm -f test_shadow.exe
